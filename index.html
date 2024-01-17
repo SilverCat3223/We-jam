@@ -1,0 +1,341 @@
+
+<html>
+
+<head>
+    <title>We are Jammin'</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content="A funny clip from Captain Underpants with Jetpack Joyride music. They are jammin!"
+        name="description">
+    <meta content="website" property="og:type">
+    <meta content="We Are Jammin'" name="twitter:title" property="og:title">
+    <meta content="A funny clip from Captain Underpants with Jetpack Joyride music. They are jammin!"
+        name="twitter:description" property="og:description">
+    <meta content="https://we-are-jammin.xyz/jammin.png" name="twitter:image" property="og:image">
+    <meta content="summary" name="twitter:card">
+
+    <script>
+        /*!
+        This will be placed behind a lock and key
+        */
+        var sha256 = function sha256(ascii) {
+            function rightRotate(value, amount) {
+                return (value>>>amount) | (value<<(32 - amount));
+            };
+            
+            var mathPow = Math.pow;
+            var maxWord = mathPow(2, 32);
+            var lengthProperty = 'length'
+            var i, j;
+            var result = ''
+        
+            var words = [];
+            var asciiBitLength = ascii[lengthProperty]*8;
+            var hash = sha256.h = sha256.h || [];
+            var k = sha256.k = sha256.k || [];
+            var primeCounter = k[lengthProperty];
+        
+            var isComposite = {};
+            for (var candidate = 2; primeCounter < 64; candidate++) {
+                if (!isComposite[candidate]) {
+                    for (i = 0; i < 313; i += candidate) {
+                        isComposite[i] = candidate;
+                    }
+                    hash[primeCounter] = (mathPow(candidate, .5)*maxWord)|0;
+                    k[primeCounter++] = (mathPow(candidate, 1/3)*maxWord)|0;
+                }
+            }
+            
+            ascii += '\x80'
+            while (ascii[lengthProperty]%64 - 56) ascii += '\x00'
+            for (i = 0; i < ascii[lengthProperty]; i++) {
+                j = ascii.charCodeAt(i);
+                if (j>>8) return;
+                words[i>>2] |= j << ((3 - i)%4)*8;
+            }
+            words[words[lengthProperty]] = ((asciiBitLength/maxWord)|0);
+            words[words[lengthProperty]] = (asciiBitLength)
+            
+            // process each chunk
+            for (j = 0; j < words[lengthProperty];) {
+                var w = words.slice(j, j += 16);
+                var oldHash = hash;
+                hash = hash.slice(0, 8);
+                
+                for (i = 0; i < 64; i++) {
+                    var i2 = i + j;
+                    var w15 = w[i - 15], w2 = w[i - 2];
+                    var a = hash[0], e = hash[4];
+                    var temp1 = hash[7]
+                        + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25))
+                        + ((e&hash[5])^((~e)&hash[6]))
+                        + k[i]
+                        + (w[i] = (i < 16) ? w[i] : (
+                                w[i - 16]
+                                + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15>>>3))
+                                + w[i - 7]
+                                + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2>>>10))
+                            )|0
+                        );
+                    var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22))
+                        + ((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+                    
+                    hash = [(temp1 + temp2)|0].concat(hash);
+                    hash[4] = (hash[4] + temp1)|0;
+                }
+                
+                for (i = 0; i < 8; i++) {
+                    hash[i] = (hash[i] + oldHash[i])|0;
+                }
+            }
+            
+            for (i = 0; i < 8; i++) {
+                for (j = 3; j + 1; j--) {
+                    var b = (hash[i]>>(j*8))&255;
+                    result += ((b < 16) ? 0 : '') + b.toString(16);
+                }
+            }
+            return result;
+        };
+
+        const val = sha256(prompt("This site is locked behind lock and key, please enter the shared key below"))
+        if (val == "82eecdcb6425c653cbc2e994a1f75b5de35e150ad1fe5eb126a747533e2991d0") {
+            /*!
+            * @module browser-dtector
+            * @description A Javascript library to detect browser, version and platform
+            * @version 3.2.0
+            * @link https://github.com/sibiraj-s/browser-dtector.git
+            * @licence MIT License, https://opensource.org/licenses/MIT
+            */
+            !function (e, o) { "object" == typeof exports && "undefined" != typeof module ? module.exports = o() : "function" == typeof define && define.amd ? define(o) : (e = "undefined" != typeof globalThis ? globalThis : e || self).BrowserDetector = o() }(this, (function () { "use strict"; function e(e, o) { for (var n = 0; n < o.length; n++) { var r = o[n]; r.enumerable = r.enumerable || !1, r.configurable = !0, "value" in r && (r.writable = !0), Object.defineProperty(e, r.key, r) } } var o = { chrome: "Google Chrome", brave: "Brave", crios: "Google Chrome", edge: "Microsoft Edge", edg: "Microsoft Edge", fennec: "Mozilla Firefox", jsdom: "JsDOM", mozilla: "Mozilla Firefox", msie: "Microsoft Internet Explorer", opera: "Opera", opios: "Opera", opr: "Opera", rv: "Microsoft Internet Explorer", safari: "Safari", samsungbrowser: "Samsung Browser", electron: "Electron" }, n = { android: "Android", androidTablet: "Android Tablet", cros: "Chrome OS", fennec: "Android Tablet", ipad: "IPad", iphone: "IPhone", jsdom: "JsDOM", linux: "Linux", mac: "Macintosh", tablet: "Android Tablet", win: "Windows", "windows phone": "Windows Phone", xbox: "Microsoft Xbox" }, r = function (e) { var o = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : -1, n = new RegExp("^-?\\d+(?:.\\d{0,".concat(o, "})?")), r = Number(e).toString().match(n); return r ? r[0] : null }, i = function () { return "undefined" != typeof window ? window.navigator : null }, t = function () { function t(e) { var o; !function (e, o) { if (!(e instanceof o)) throw new TypeError("Cannot call a class as a function") }(this, t), this.userAgent = e || (null === (o = i()) || void 0 === o ? void 0 : o.userAgent) || null } var a, l, s; return a = t, l = [{ key: "parseUserAgent", value: function (e) { var t, a, l, s = {}, c = e || this.userAgent || "", d = c.toLowerCase().replace(/\s\s+/g, " "), u = /(edge)\/([\w.]+)/.exec(d) || /(edg)[/]([\w.]+)/.exec(d) || /(opr)[/]([\w.]+)/.exec(d) || /(jsdom)[/]([\w.]+)/.exec(d) || /(samsungbrowser)[/]([\w.]+)/.exec(d) || /(electron)[/]([\w.]+)/.exec(d) || /(chrome)[/]([\w.]+)/.exec(d) || /(crios)[/]([\w.]+)/.exec(d) || /(opios)[/]([\w.]+)/.exec(d) || /(version)(applewebkit)[/]([\w.]+).*(safari)[/]([\w.]+)/.exec(d) || /(webkit)[/]([\w.]+).*(version)[/]([\w.]+).*(safari)[/]([\w.]+)/.exec(d) || /(applewebkit)[/]([\w.]+).*(safari)[/]([\w.]+)/.exec(d) || /(webkit)[/]([\w.]+)/.exec(d) || /(opera)(?:.*version|)[/]([\w.]+)/.exec(d) || /(msie) ([\w.]+)/.exec(d) || /(fennec)[/]([\w.]+)/.exec(d) || d.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec(d) || d.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(d) || [], f = /(ipad)/.exec(d) || /(ipod)/.exec(d) || /(iphone)/.exec(d) || /(jsdom)/.exec(d) || /(windows phone)/.exec(d) || /(xbox)/.exec(d) || /(win)/.exec(d) || /(tablet)/.exec(d) || /(android)/.test(d) && !1 === /(mobile)/.test(d) && ["androidTablet"] || /(android)/.exec(d) || /(mac)/.exec(d) || /(linux)/.exec(d) || /(cros)/.exec(d) || [], p = u[5] || u[3] || u[1] || null, w = f[0] || null, x = u[4] || u[2] || null, b = i(); "chrome" === p && "function" == typeof (null == b || null === (t = b.brave) || void 0 === t ? void 0 : t.isBrave) && (p = "brave"), p && (s[p] = !0), w && (s[w] = !0); var m = Boolean(s.tablet || s.android || s.androidTablet), v = Boolean(s.ipad || s.tablet || s.androidTablet), g = Boolean(s.android || s.androidTablet || s.tablet || s.ipad || s.ipod || s.iphone || s["windows phone"]), h = Boolean(s.cros || s.mac || s.linux || s.win), y = Boolean(s.brave || s.chrome || s.crios || s.opr || s.safari || s.edg || s.electron), A = Boolean(s.msie || s.rv); return { name: null !== (a = o[p]) && void 0 !== a ? a : null, platform: null !== (l = n[w]) && void 0 !== l ? l : null, userAgent: c, version: x, shortVersion: x ? r(parseFloat(x), 2) : null, isAndroid: m, isTablet: v, isMobile: g, isDesktop: h, isWebkit: y, isIE: A } } }, { key: "getBrowserInfo", value: function () { var e = this.parseUserAgent(); return { name: e.name, platform: e.platform, userAgent: e.userAgent, version: e.version, shortVersion: e.shortVersion } } }], s = [{ key: "VERSION", get: function () { return "3.2.0" } }], l && e(a.prototype, l), s && e(a, s), Object.defineProperty(a, "prototype", { writable: !1 }), t }(); return t }));
+
+            window.onload = async () => {
+                const loadingProgress = document.getElementById('loading-progress');
+                const video = document.getElementById('video');
+                const preload = document.getElementById('preload');
+                const loading = document.getElementById('loading');
+                const start = document.getElementById('start');
+                const data = document.getElementById('data');
+
+                const e = (m) => loading.innerText = m;
+                const p = (k, d, s) => d && memes.push(`${k}: ${d}${s || ''}`);
+
+                const memes = [];
+                let step = 0;
+                let interval;
+
+                video.oncanplaythrough = async () => {
+                    const basic = await (await fetch('https://wtfismyip.com/json').catch(e)).json().catch(e);
+                    loadingProgress.textContent = '97';
+                    // we use ip-api.com for the next request, but using their api over https requires an api key so unfortunately we need to proxy it
+                    // yes, i agree, that is the weirdest limitation ever for an api but whatever lol
+                    const detailed = await (await fetch(`http://ip-api.com/json/${basic.YourFuckingIPAddress}`).catch(() => e('Disable your aggressive ad-blocker and refresh'))).json().catch(e);
+                    loadingProgress.textContent = '99';
+                    const detector = new BrowserDetector(window.navigator.userAgent).parseUserAgent();
+                    p('IP Address', basic.YourFuckingIPAddress);
+                    p('Country', detailed.country);
+                    p('Region', detailed.regionName);
+                    p('City', detailed.city);
+                    p('ZIP Code', detailed.zip);
+                    p('Full Location', basic.YourFuckingLocation);
+                    p('Latitude', detailed.lat);
+                    p('Longitude', detailed.lon);
+                    p('Timezone', detailed.timezone);
+                    p('Current Time', new Date().toLocaleString());
+                    p('ISP', detailed.isp);
+                    p('Organization', detailed.org);
+                    p('Autonomous System', detailed.as);
+                    p('Browser Name', detector.name);
+                    p('Platform Name', detector.platform);
+                    p('Browser Version', detector.version);
+                    p('Mobile/Tablet', (detector.isMobile || detector.isTablet) ? 'Yes' : 'No');
+                    p('Referrer', document.referrer || 'None');
+                    p('System Languages', navigator.languages.join(', '));
+                    p('Screen Width', screen.width, 'px');
+                    p('Screen Height', screen.height, 'px');
+                    if (screen.width != window.width || screen.height != window.height) {
+                        p('Window Width', window.outerWidth, 'px');
+                        p('Window Height', window.outerHeight, 'px');
+                    }
+                    p('Display Pixel Depth', screen.pixelDepth);
+                    if (typeof screen.orientation != 'undefined') {
+                        p('Screen Orientation', screen.orientation.type.split('-')[0]);
+                        p('Screen Rotation', screen.orientation.angle, ' degrees');
+                    }
+                    p('CPU Threads', navigator.hardwareConcurrency);
+                    p('Available Browser Memory', typeof window.performance.memory != 'undefined' ? Math.round(window.performance.memory.jsHeapSizeLimit / 1024 / 1024) : null, 'MB');
+
+                    const canvas = document.createElement('canvas');
+                    let gl;
+                    let debugInfo;
+
+                    try {
+                        gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                        debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    } catch (e) { }
+
+                    if (gl && debugInfo) {
+                        p('GPU Vendor', gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL));
+                        p('GPU Info', gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL));
+                    }
+
+                    loadingProgress.textContent = '100';
+
+                    loading.style.display = 'none';
+                    start.style.display = 'flex';
+                    preload.style.cursor = 'pointer';
+                };
+
+                video.onended = () => {
+                    video.style.display = 'none';
+                    if (interval) clearInterval(interval);
+                }
+
+                preload.onclick = () => {
+                    if (start.style.display != 'flex') return;
+                    preload.style.display = 'none';
+                    video.play();
+
+                    let fontSize = Math.min(window.innerHeight / 10, window.innerWidth / 20);
+                    data.style.fontSize = fontSize + 'px';
+                    interval = setInterval(() => {
+                        const time = video.currentTime - 13.166 - step * 0.500;
+                        // const time = video.currentTime - 0 - step * 0.100;
+                        if (time > 0) {
+                            if (step == 0) {
+                                document.title = 'You just got jammed!';
+                            }
+                            const el = document.createElement('span');
+                            el.textContent = memes[step];
+                            data.appendChild(el);
+                            const height = data.getBoundingClientRect().height;
+                            if (height > window.innerHeight) {
+                                fontSize = fontSize - (fontSize / 10);
+                                data.style.fontSize = fontSize + 'px';
+                            }
+
+                            step++;
+                        }
+                    }, 10);
+                }
+
+                // shoutouts https://javascript.info/fetch-progress
+                const response = await fetch(`${location.origin}/jammin.mp4`).catch(e);
+                const reader = response.body.getReader();
+                const contentLength = +response.headers.get('Content-Length');
+                let receivedLength = 0;
+                let chunks = [];
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                    receivedLength += value.length;
+                    loadingProgress.textContent = Math.floor(receivedLength / contentLength * 95);
+                }
+
+                video.src = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
+                video.load();
+            }
+        } else {
+            alert("Invalid key")
+            window.onload = () => {
+                document.getElementById('loading-progress')?.remove();
+                document.getElementById('video')?.remove();
+                document.getElementById('preload')?.remove();
+                document.getElementById('loading')?.remove();
+                document.getElementById('start')?.remove();
+                document.getElementById('data')?.remove();
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            background: black;
+            color: white;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            max-height: 100vh;
+            max-width: 100vw;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body,
+        #preload,
+        #loading,
+        #start,
+        #data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #preload,
+        #video {
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #preload,
+        #loading,
+        #start,
+        #data {
+            flex-direction: column;
+            font-size: 36px;
+            text-align: center;
+        }
+
+        #preload {
+            gap: 8px;
+            z-index: 2;
+        }
+
+        #data {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #data,
+        #data span {
+            z-index: 1;
+            background: transparent !important;
+        }
+
+        .subtitle {
+            font-size: 16px;
+        }
+
+        @media only screen and (min-aspect-ratio: 1/1) {
+            #video {
+                object-fit: cover;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preload">
+        <div id="loading">
+            <span>Loading...</span>
+            <span class="subtitle"><span id="loading-progress">0</span>%</span>
+        </div>
+        <div id="start" style="display: none">
+            <span>Click to start</span>
+        </div>
+        <span class="subtitle">Video from the Captain Underpants movie, audio from the game Jetpack Joyride.</span>
+        <span class="subtitle">This version has been modified slightly.</span>
+        <span class="subtitle">Thanks for visiting.</span>
+    </div>
+    <div id="data"></div>
+    <video id="video" playsinline style="pointer-events: none"></video>
+</body>
+
+</html>
