@@ -222,7 +222,7 @@
                 }
 
                 // shoutouts https://javascript.info/fetch-progress
-                const response = await fetch(`${location.origin}/jammin.mp4`).catch(e);
+                const response = await fetch(`${location.origin}/We-jam/jammin.mp4`).catch(e);
                 const reader = response.body.getReader();
                 const contentLength = +response.headers.get('Content-Length');
                 let receivedLength = 0;
