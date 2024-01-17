@@ -126,63 +126,66 @@
                 video.oncanplaythrough = async () => {
                     const basic = await (await fetch('https://wtfismyip.com/json').catch(e)).json().catch(e);
                     loadingProgress.textContent = '97';
-                    // we use ip-api.com for the next request, but using their api over https requires an api key so unfortunately we need to proxy it
-                    // yes, i agree, that is the weirdest limitation ever for an api but whatever lol
-                    const detailed = await (await fetch(`http://ip-api.com/json/${basic.YourFuckingIPAddress}`).catch(() => e('Disable your aggressive ad-blocker and refresh'))).json().catch(e);
-                    loadingProgress.textContent = '99';
-                    const detector = new BrowserDetector(window.navigator.userAgent).parseUserAgent();
-                    p('IP Address', basic.YourFuckingIPAddress);
-                    p('Country', detailed.country);
-                    p('Region', detailed.regionName);
-                    p('City', detailed.city);
-                    p('ZIP Code', detailed.zip);
-                    p('Full Location', basic.YourFuckingLocation);
-                    p('Latitude', detailed.lat);
-                    p('Longitude', detailed.lon);
-                    p('Timezone', detailed.timezone);
-                    p('Current Time', new Date().toLocaleString());
-                    p('ISP', detailed.isp);
-                    p('Organization', detailed.org);
-                    p('Autonomous System', detailed.as);
-                    p('Browser Name', detector.name);
-                    p('Platform Name', detector.platform);
-                    p('Browser Version', detector.version);
-                    p('Mobile/Tablet', (detector.isMobile || detector.isTablet) ? 'Yes' : 'No');
-                    p('Referrer', document.referrer || 'None');
-                    p('System Languages', navigator.languages.join(', '));
-                    p('Screen Width', screen.width, 'px');
-                    p('Screen Height', screen.height, 'px');
-                    if (screen.width != window.width || screen.height != window.height) {
-                        p('Window Width', window.outerWidth, 'px');
-                        p('Window Height', window.outerHeight, 'px');
+                    // swap ip-api.com for ipinfo.io because they want money for https >:(
+                    const detailed = await (await fetch(`https://ipwho.is/${basic.YourFuckingIPAddress}`).catch(() => e('Disable your aggressive ad-blocker and refresh'))).json().catch(e);
+                    if (detailed.success) {
+                        loadingProgress.textContent = '99';
+                        const detector = new BrowserDetector(window.navigator.userAgent).parseUserAgent();
+                        p('IP Address', basic.YourFuckingIPAddress);
+                        p('Country', detailed.country);
+                        p('Region', detailed.regionName);
+                        p('City', detailed.city);
+                        p('ZIP Code', detailed.postal);
+                        p('Full Location', basic.YourFuckingLocation);
+                        p('Latitude', detailed.latitude);
+                        p('Longitude', detailed.longitude);
+                        p('Timezone', detailed.timezone.id);
+                        p('Current Time', new Date().toLocaleString());
+                        p('ISP', detailed?.connection?.isp);
+                        p('Organization', detailed?.connection?.org);
+                        p('Autonomous System Number', detailed?.connection?.asn);
+                        p('Browser Name', detector.name);
+                        p('Platform Name', detector.platform);
+                        p('Browser Version', detector.version);
+                        p('Mobile/Tablet', (detector.isMobile || detector.isTablet) ? 'Yes' : 'No');
+                        p('Referrer', document.referrer || 'None');
+                        p('System Languages', navigator.languages.join(', '));
+                        p('Screen Width', screen.width, 'px');
+                        p('Screen Height', screen.height, 'px');
+                        if (screen.width != window.width || screen.height != window.height) {
+                            p('Window Width', window.outerWidth, 'px');
+                            p('Window Height', window.outerHeight, 'px');
+                        }
+                        p('Display Pixel Depth', screen.pixelDepth);
+                        if (typeof screen.orientation != 'undefined') {
+                            p('Screen Orientation', screen.orientation.type.split('-')[0]);
+                            p('Screen Rotation', screen.orientation.angle, ' degrees');
+                        }
+                        p('CPU Threads', navigator.hardwareConcurrency);
+                        p('Available Browser Memory', typeof window.performance.memory != 'undefined' ? Math.round(window.performance.memory.jsHeapSizeLimit / 1024 / 1024) : null, 'MB');
+
+                        const canvas = document.createElement('canvas');
+                        let gl;
+                        let debugInfo;
+
+                        try {
+                            gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                            debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                        } catch (e) { }
+
+                        if (gl && debugInfo) {
+                            p('GPU Vendor', gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL));
+                            p('GPU Info', gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL));
+                        }
+
+                        loadingProgress.textContent = '100';
+
+                        loading.style.display = 'none';
+                        start.style.display = 'flex';
+                        preload.style.cursor = 'pointer';
+                    } else {
+                        e('Fetch Failed (prob adblock): Disable your aggressive ad-blocker and refresh')
                     }
-                    p('Display Pixel Depth', screen.pixelDepth);
-                    if (typeof screen.orientation != 'undefined') {
-                        p('Screen Orientation', screen.orientation.type.split('-')[0]);
-                        p('Screen Rotation', screen.orientation.angle, ' degrees');
-                    }
-                    p('CPU Threads', navigator.hardwareConcurrency);
-                    p('Available Browser Memory', typeof window.performance.memory != 'undefined' ? Math.round(window.performance.memory.jsHeapSizeLimit / 1024 / 1024) : null, 'MB');
-
-                    const canvas = document.createElement('canvas');
-                    let gl;
-                    let debugInfo;
-
-                    try {
-                        gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                        debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    } catch (e) { }
-
-                    if (gl && debugInfo) {
-                        p('GPU Vendor', gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL));
-                        p('GPU Info', gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL));
-                    }
-
-                    loadingProgress.textContent = '100';
-
-                    loading.style.display = 'none';
-                    start.style.display = 'flex';
-                    preload.style.cursor = 'pointer';
                 };
 
                 video.onended = () => {
